@@ -47,3 +47,15 @@ def cols_to_str(df):
             df[col] = df[col].astype('str')
     
     return df
+
+def convert_cols_to_strs(df):
+    for col in df.columns:
+        
+        # format timedelta columns
+        if df[col].dtype == '<m8[ns]':
+            df[col] = df[col].astype('str')
+            df[col] = df[col].apply(lambda x:x.split(' ')[2])
+        else:
+            df[col] = df[col].astype('str')
+    
+    return df

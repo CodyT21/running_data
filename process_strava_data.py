@@ -16,42 +16,38 @@ def load_strava_data():
 
 def load_run_data():
     df = load_strava_data()
-    return df.loc[df['type'] == 'Run']
+    runs_df = process_run_data(df.loc[df['type'] == 'Run'])
+    return runs_df
 
 
-def get_new_run_data():
-    df = process_run_data()
-    return cols_to_str(df)
-
-
-def process_run_data():
+def process_run_data(df):
     '''
     add in an actual description
     '''
     
     # load in strava running data
-    runs_df = load_run_data()
+    #runs_df = load_run_data()
 
     # create consistent column names
-    runs_df = rename_columns(runs_df)
+    df = rename_columns(df)
 
     # date fields
-    runs_df['date'] = pd.to_datetime(runs_df['date'], format='mixed')
-    runs_df['year'] = runs_df['date'].dt.year
-    runs_df['year_month'] = runs_df['date'].dt.to_period('M')
-    runs_df['season'] = runs_df['date'].apply(date_to_season)
-    runs_df['time_of_day'] = runs_df['name'].str.lower().str.split(' ').str[0]
-    runs_df['time_of_day'] = runs_df['time_of_day'].replace({'lunch': 'afternoon'}).astype('category')
+    df['date'] = pd.to_datetime(df['date'], format='mixed')
+    df['year'] = df['date'].dt.year
+    df['year_month'] = df['date'].dt.to_period('M')
+    df['season'] = df['date'].apply(date_to_season)
+    df['time_of_day'] = df['name'].str.lower().str.split(' ').str[0]
+    df['time_of_day'] = df['time_of_day'].replace({'lunch': 'afternoon'}).astype('category')
     
     # create fields based on pace
-    runs_df['moving_time_s'] = pd.to_timedelta(runs_df['moving_time_s'], unit='s')
-    runs_df['pace_per_mile'] = runs_df['moving_time_s'] / runs_df['distance_mi']
+    df['moving_time_s'] = pd.to_timedelta(df['moving_time_s'], unit='s')
+    df['pace_per_mile'] = df['moving_time_s'] / df['distance_mi']
     # runs_df['pace_per_mile_dt'] = pd.to_datetime(runs_df['pace_per_mile'].apply(format_timedelta), format='%M:%S')
     # runs_df['formatted_pace_per_mile'] = runs_df['pace_per_mile_dt'].dt.time
 
     # create fields based on heartrate zones
-    runs_df['average_zone'] = runs_df['average_heartrate'].apply(find_zone)
-    runs_df['max_zone']  = runs_df['max_heartrate'].apply(find_zone)
-    runs_df['ratio_avg_hr_to_max_hr'] = runs_df['average_heartrate'] / runs_df['max_heartrate']
+    df['average_zone'] = df['average_heartrate'].apply(find_zone)
+    df['max_zone']  = df['max_heartrate'].apply(find_zone)
+    df['ratio_avg_hr_to_max_hr'] = df['average_heartrate'] / df['max_heartrate']
 
-    return  runs_df
+    return  df
