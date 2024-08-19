@@ -25,9 +25,6 @@ def process_run_data(df):
     add in an actual description
     '''
     
-    # load in strava running data
-    #runs_df = load_run_data()
-
     # create consistent column names
     df = rename_columns(df)
 
@@ -40,10 +37,7 @@ def process_run_data(df):
     df['time_of_day'] = df['time_of_day'].replace({'lunch': 'afternoon'}).astype('category')
     
     # create fields based on pace
-    df['moving_time_s'] = pd.to_timedelta(df['moving_time_s'], unit='s')
-    df['pace_per_mile'] = df['moving_time_s'] / df['distance_mi']
-    # runs_df['pace_per_mile_dt'] = pd.to_datetime(runs_df['pace_per_mile'].apply(format_timedelta), format='%M:%S')
-    # runs_df['formatted_pace_per_mile'] = runs_df['pace_per_mile_dt'].dt.time
+    df['pace_per_mile'] = pd.to_timedelta((df['moving_time_s'] / df['distance_mi']), unit='s')
 
     # create fields based on heartrate zones
     df['average_zone'] = df['average_heartrate'].apply(find_zone)
