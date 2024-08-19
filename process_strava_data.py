@@ -30,6 +30,7 @@ def process_run_data(df):
 
     # date fields
     df['date'] = pd.to_datetime(df['date'], format='mixed')
+    df['date'] = df['date'].dt.normalize()
     df['year'] = df['date'].dt.year
     df['year_month'] = df['date'].dt.to_period('M')
     df['season'] = df['date'].apply(date_to_season)
