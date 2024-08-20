@@ -1,5 +1,6 @@
 AGE = 29
-MAX_HEART_RATE = 220 - AGE
+MAX_HEART_RATE = 208 - (0.7 * AGE) # forumla comes from the Mayo Clininc
+RESTING_HEART_RATE = 55
 
 def rename_columns(df):
     new_column_names = {col: col.strip().lower().replace(' ', '_').replace('.1', '') for col in df.columns}
@@ -8,13 +9,17 @@ def rename_columns(df):
 
 # determine average running zone based on averagee heart rate   
 def find_zone(avg_heart_rate):
-    if avg_heart_rate < 0.6 * MAX_HEART_RATE:
+    
+    # Using the Karnonen method
+    hrr = MAX_HEART_RATE - RESTING_HEART_RATE # heart rate reserve
+    
+    if avg_heart_rate < (0.6 * hrr) + RESTING_HEART_RATE:
         return 1
-    elif avg_heart_rate < 0.7 * MAX_HEART_RATE:
+    elif avg_heart_rate < (0.7 * hrr) + RESTING_HEART_RATE:
         return 2
-    elif avg_heart_rate < 0.8 * MAX_HEART_RATE:
+    elif avg_heart_rate < (0.8 * hrr) + RESTING_HEART_RATE:
         return 3
-    elif avg_heart_rate < 0.9 * MAX_HEART_RATE:
+    elif avg_heart_rate < (0.9 * hrr) + RESTING_HEART_RATE:
         return 4
     else:
         return 5
