@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import gspread
 import matplotlib.dates as mdates
-from helper_functions import rename_columns, find_zone, format_timedelta, date_to_season, cols_to_str  
+from helper_functions import rename_columns, find_zone, format_timedelta, date_to_season, cols_to_str, categorize_run_by_distance, categorize_run_type  
 from datetime import datetime
 
 GSHEET_STRAVA_KEY = '1T5ScOCSiojB0lUUky9NgyVeH6IpYQboACxh4HOAxO8o'
@@ -44,5 +44,9 @@ def process_run_data(df):
     df['average_zone'] = df['average_heartrate'].apply(find_zone)
     df['max_zone']  = df['max_heartrate'].apply(find_zone)
     df['ratio_avg_hr_to_max_hr'] = df['average_heartrate'] / df['max_heartrate']
+
+    # create fields based on distance
+    df['distance_category'] = df['distance_mi'].apply(categorize_run_by_distance)
+    df['run_type'] = df['distance_mi'].apply(categorize_run_type)
 
     return  df

@@ -64,3 +64,25 @@ def convert_cols_to_strs(df):
             df[col] = df[col].astype('str')
     
     return df
+
+def categorize_run_by_distance(distance):
+    short_run_cutoff_distance = 4
+    medium_run_cutoff_distance = 10
+
+    if distance < short_run_cutoff_distance:
+        return 'short'
+    elif distance < medium_run_cutoff_distance:
+        return 'medium'
+    else:
+        return 'long'
+
+def categorize_run_type(distance):
+    # ranges are used to account for any gps inconistencies between phone app and watch gps tracking
+    if distance > 3 and distance <= 3.2:
+        return '5k'
+    elif distance > 6 and distance <= 6.4:
+        return '10k'
+    elif distance > 12.7 and distance <= 13.5:
+        return 'half marathon'
+    else:
+        return 'other'
